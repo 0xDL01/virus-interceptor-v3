@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virus Interceptor v3</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 40px; }
+    textarea, input[type="file"] { width: 100%; padding: 10px; font-size: 15px; margin-bottom: 10px; }
+    button { padding: 10px 25px; font-size: 16px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    #result { margin-top: 30px; background: #fff; padding: 20px; border-radius: 5px; }
+    li { margin-bottom: 10px; }
+    img { max-width: 100%; margin-top: 10px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <h2>🛡️ Scan Message, Link or Upload App Image</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    <textarea name="message" placeholder="Paste message, links, or suspicious content here..."></textarea><br>
+    <input type="file" name="file"><br>
+    <button type="submit">Scan</button>
+  </form>
+
+  {% if results %}
+  <div id="result">
+    <h3>🔍 Scan Results</h3>
+    <ul>
+      {% for link, status, matches in results %}
+        <li><strong>{{ link }}</strong> → {{ status }}
+          {% if matches %}
+            <ul>
+              {% for name, desc in matches %}
+                <li>⚠️ <b>{{ name }}</b>: {{ desc }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if image_url %}
+  <div>
+    <h4>🖼️ Uploaded Image Preview:</h4>
+    <img src="{{ image_url }}">
+  </div>
+  {% endif %}
+</body>
+</html>
