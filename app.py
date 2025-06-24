@@ -59,11 +59,22 @@ def detect_scam_links(text):
             suspicious = True
             matched_tags.append(("subdomain", "Too many subdomains"))
 
-        if any(k in link_lower for k in SCAM_APPS):
+         if any(k in link_lower for k in SCAM_APPS):
             for k, v in SCAM_APPS.items():
                 if k in link_lower:
                     matched_tags.append((k, v))
             suspicious = True
+
+        # ✅ Add this new fake GOV/HomeOffice domain check
+        gov_keywords = ["gov", "homeoffice", "visa", "refund", "verify", "secure", "tax"]
+        official_gov_suffixes = [".gov.uk", "gov.uk"]
+
+        for keyword in gov_keywords:
+            if keyword in link_lower:
+                if not any(link_lower.endswith(suffix) or f"//{suffix}" in link_lower for suffix in official_gov_suffixes):
+                    matched_tags.append(("gov-fake", "Fake GOV/HomeOffice style domain"))
+                    suspicious = True
+                    break
 
         if suspicious:
             results.append((link, "⚠️ Suspicious", matched_tags))
